@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>日付と干支計算</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 50px;
+        }
+        input, button {
+            font-size: 16px;
+            padding: 10px;
+            margin: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>日付と干支計算</h1>
+    <form id="dateForm">
+        <input type="text" id="date" name="date" placeholder="yyyy/mm/dd または yyyymmdd">
+        <button type="button" onclick="calculate()">結果</button>
+    </form>
+    <p id="result"></p>
+    <button onclick="copyToClipboard()">コピー</button>
+
+    <script>
+        function calculate() {
+            const date = document.getElementById('date').value;
+            fetch('/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `date=${date}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById('result').innerText = data.result;
+                }
+            });
+        }
+
+        function copyToClipboard() {
+            const result = document.getElementById('result').innerText;
+            navigator.clipboard.writeText(result).then(() => {
+                alert('結果がクリップボードにコピーされました。');
+            });
+        }
+    </script>
+</body>
+</html>
